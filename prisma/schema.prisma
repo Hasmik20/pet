@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id             Int        @id @default(autoincrement())
+  email          String     @unique
+  hashedPassword String
+  pets           PetTypes[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model PetTypes {
+  id        Int      @id @default(autoincrement())
+  name      String
+  ownerName String
+  imageUrl  String
+  age       Int
+  notes     String
+  Users     User     @relation(fields: [usersId], references: [id])
+  usersId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
